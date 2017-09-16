@@ -5,3 +5,4 @@ import:
 - package: gopkg.in/yaml.v2
 - package: github.com/julienschmidt/httprouter
   version: v1.1
+- package: github.com/matishsiao/goInfo
