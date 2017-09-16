@@ -1,0 +1,16 @@
+hash: e9d0c101a9223ba6a1f499cd9b4fd9266e0ba16a81ee8c6ad44d82fc8a065d7c
+updated: 2017-09-16T10:34:41.003976476-07:00
+imports:
+- name: github.com/go-redis/redis
+  version: fdafb11e5fa5d52d965e12073c8a58468c98ebe2
+  subpackages:
+  - internal
+  - internal/consistenthash
+  - internal/hashtag
+  - internal/pool
+  - internal/proto
+- name: github.com/nu7hatch/gouuid
+  version: 179d4d0c4d8d407a32af483c2354df1d2c91e6c3
+- name: gopkg.in/yaml.v2
+  version: eb3733d160e74a9c7e442f435eb3bea458e1d19f
+testImports: []

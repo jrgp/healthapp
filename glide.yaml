@@ -1,0 +1,5 @@
+package: healthapp
+import:
+- package: github.com/go-redis/redis
+- package: github.com/nu7hatch/gouuid
+- package: gopkg.in/yaml.v2
