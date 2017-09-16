@@ -1,5 +1,5 @@
-hash: e9d0c101a9223ba6a1f499cd9b4fd9266e0ba16a81ee8c6ad44d82fc8a065d7c
-updated: 2017-09-16T10:34:41.003976476-07:00
+hash: 94045e4ee7598338125dd41c2a101e3f49a74eb56755e3c0b826c7552d759885
+updated: 2017-09-16T11:10:29.898055445-07:00
 imports:
 - name: github.com/go-redis/redis
   version: fdafb11e5fa5d52d965e12073c8a58468c98ebe2
@@ -9,6 +9,8 @@ imports:
   - internal/hashtag
   - internal/pool
   - internal/proto
+- name: github.com/julienschmidt/httprouter
+  version: 8c199fb6259ffc1af525cc3ad52ee60ba8359669
 - name: github.com/nu7hatch/gouuid
   version: 179d4d0c4d8d407a32af483c2354df1d2c91e6c3
 - name: gopkg.in/yaml.v2
