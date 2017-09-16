@@ -7,9 +7,9 @@ import "github.com/go-redis/redis"
 
 func get_redis() *redis.Client {
 	return redis.NewClient(&redis.Options{
-		Addr:     "127.0.0.1:6379",
-		Password: "", // no password set
-		DB:       0,  // use default DB
+		Addr:     Configs.RedisURL,
+		Password: Configs.RedisPassword,
+		DB:       0,
 	})
 }
 
@@ -25,14 +25,12 @@ func main() {
 
 	flag.Parse()
 
-	client := get_redis()
-
 	if run_alerter {
-		Alerter(client)
+		Alerter(get_redis())
 	} else if run_web {
-		Web(client)
+		Web(get_redis())
 	} else if run_agent {
-		Agent(client)
+		Agent()
 	} else {
 		fmt.Println("No sub command to run. See -h for usage.")
 		os.Exit(1)

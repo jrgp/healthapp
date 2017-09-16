@@ -7,7 +7,8 @@ import "io/ioutil"
 import "gopkg.in/yaml.v2"
 
 type Config struct {
-	Redis                   string   `yaml:"redis"`
+	RedisURL                string   `yaml:"redis"`
+	RedisPassword           string   `yaml:"redis_password"`
 	ApiKey                  string   `yaml:"api_key"`
 	ApiURL                  string   `yaml:"api_url"`
 	SetUID                  string   `yaml:"setuid"`
@@ -34,6 +35,8 @@ func init() {
 	var contents []byte
 	contents = nil
 
+	var found_path string
+
 	for _, path := range paths {
 		if path == "" {
 			continue
@@ -43,6 +46,7 @@ func init() {
 
 		if err == nil {
 			contents = this_contents
+			found_path = path
 			fmt.Println("Reading config from", path)
 			break
 		}
@@ -55,6 +59,6 @@ func init() {
 
 	err := yaml.Unmarshal(contents, &Configs)
 	if err != nil {
-		log.Fatalf("error: %v", err)
+		log.Fatalf("Failed parsing config file  '%v': ", found_path, err)
 	}
 }
