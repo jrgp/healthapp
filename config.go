@@ -11,6 +11,7 @@ type Config struct {
 	RedisPassword           string   `yaml:"redis_password"`
 	ApiKey                  string   `yaml:"api_key"`
 	ApiURL                  string   `yaml:"api_url"`
+	ApiListen               string   `yaml:"api_listen"`
 	SetUID                  string   `yaml:"setuid"`
 	SetGID                  string   `yaml:"setgid"`
 	ServerStalenessDuration int      `yaml:"server_staleness_duration"`

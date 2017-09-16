@@ -11,6 +11,8 @@ api_key: foobar
 # URL of the api server for agents to post to
 api_url: http://localhost:8000
 
+api_listen: ':8000'
+
 # servers are considered dead of they haven't updated in this many seconds
 server_staleness_duration: 300
 

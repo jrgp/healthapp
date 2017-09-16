@@ -120,5 +120,5 @@ func Web(r *redis.Client) {
 	router.GET("/alerts", SinglePageApp)
 	router.GET("/alert/:alert_id", SinglePageApp)
 
-	log.Fatal(http.ListenAndServe(":8080", router))
+	log.Fatal(http.ListenAndServe(Configs.ApiListen, router))
 }
