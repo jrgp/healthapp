@@ -8,11 +8,11 @@ func Alerter(r *redis.Client) {
 	sleep_time := 60
 	for {
 		err := alert_run(r)
-    if err == nil {
-      log.Printf("Alert processor run done. Will sleep %v seconds", sleep_time)
-    } else {
-      log.Printf("Alert run problem: %v. Will sleep %v seconds", err, sleep_time)
-    }
+		if err == nil {
+			log.Printf("Alert processor run done. Will sleep %v seconds", sleep_time)
+		} else {
+			log.Printf("Alert run problem: %v. Will sleep %v seconds", err, sleep_time)
+		}
 		time.Sleep(time.Duration(sleep_time) * time.Second)
 	}
 }
