@@ -72,9 +72,16 @@ func Web(r *redis.Client) {
 	router.GET("/api/v0/alerts", AlertsList)
 	router.GET("/api/v0/alert/:alert_id", AlertInfo)
 
-	// UI routes
-	router.GET("/", SinglePageApp)
+	// Static assets
 	router.GET("/static/*path", StaticResource)
+
+	// All of these output the same HTML file which acts according to the route
+	// it got. Most of these are only hit on hard browser refreshes as html5
+	// navigation api handles the rest
+	router.GET("/", SinglePageApp)
+	router.GET("/server/:server_name", SinglePageApp)
+	router.GET("/alerts", SinglePageApp)
+	router.GET("/alert/:alert_id", SinglePageApp)
 
 	log.Fatal(http.ListenAndServe(":8080", router))
 }
