@@ -1,0 +1,34 @@
+redis: localhost:6379
+
+# optionally setuid to a different user. applies to alerter and agent if
+# you start them as root.
+#setuid: nobody
+#setgid: nogroup
+
+# need to set this to the same secret value on agents and API server.
+api_key: foobar
+
+# URL of the api server for agents to post to
+api_url: http://localhost:8000
+
+# servers are considered dead of they haven't updated in this many seconds
+server_staleness_duration: 300
+
+# process alert loop every this interval
+alert_process_interval: 30
+
+# send the "alert ongoing" email once every this interval. -1 to never send ongoing emails
+alert_send_email_interval: 300
+
+# allow sending emails
+enable_emails: True
+
+# smtp server
+email_server: localhost
+
+# From line
+email_sender: Python HealthApp <noreply@yourdomain.com>
+
+# list of recipients for emails
+email_recipients:
+  - you@yourdomain.com

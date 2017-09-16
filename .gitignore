@@ -1,3 +1,4 @@
 *.swp
 /vendor
 /healthapp
+/config.yaml
