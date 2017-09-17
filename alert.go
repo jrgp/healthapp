@@ -59,7 +59,7 @@ func (alert Alert) SaveClosedAlert(r *redis.Client) {
 	alert_key := fmt.Sprintf(KeyMap["alert_info"], alert.ID)
 	exists, _ := r.Exists(alert_key).Result()
 
-	if exists == 1 {
+	if exists == 0 {
 		return
 	}
 
