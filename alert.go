@@ -46,6 +46,7 @@ func (alert Alert) SaveNewAlert(r *redis.Client) {
 	values["end_time"] = strconv.FormatInt(alert.EndTime, 10)
 	values["info"] = alert.Description
 	values["server_name"] = alert.ServerName
+	values["state_name"] = alert.StateName
 
 	r.HMSet(fmt.Sprintf(KeyMap["alert_info"], alert.ID), values)
 	r.ZAdd(KeyMap["alerts_historical"], redis.Z{Score: float64(alert.StartTime), Member: alert.ID})
@@ -67,18 +68,46 @@ func (alert Alert) SaveClosedAlert(r *redis.Client) {
 	values["start_time"] = strconv.FormatInt(alert.StartTime, 10)
 	values["duration"] = strconv.FormatInt(alert.Duration, 10)
 	r.HMSet(fmt.Sprintf(KeyMap["alert_info"], alert.ID), values)
-
 }
 
-func LoadAlertFromRedis(r *redis.Client, state_name, alert_id string) Alert {
+func (alert Alert) GetPrettyRepresentation(r *redis.Client) PrettyAlertInfo {
+	info := PrettyAlertInfo{}
+	info.StartTime = fmt.Sprintf("%s", time.Unix(int64(alert.StartTime), 0))
+	if alert.EndTime == 0 {
+		info.EndTime = "Ongoing"
+		info.Duration = fmt.Sprintf("%v seconds", time.Now().Unix()-alert.StartTime)
+	} else {
+		info.EndTime = fmt.Sprintf("%s", time.Unix(int64(alert.EndTime), 0))
+		info.Duration = fmt.Sprintf("%v seconds", alert.EndTime-alert.StartTime)
+	}
+	info.ID = alert.ID
+	info.StateName = alert.StateName
+	info.Description = alert.Description
+	if alert.EndTime > 0 {
+		info.Ongoing = false
+	} else {
+		info.Ongoing = true
+	}
+	server, err := ServerLoadFromRedis(r, alert.ServerName)
+	if err == nil {
+		info.Server = server
+	} else {
+		log.Printf("failed looking up server %v", alert.ServerName)
+	}
+	return info
+}
+
+func LoadAlertFromRedis(r *redis.Client, alert_id string) Alert {
 	alert_key := fmt.Sprintf(KeyMap["alert_info"], alert_id)
 	alert_info, _ := r.HGetAll(alert_key).Result()
-	start_time, _ := strconv.ParseInt(alert_info["end_time"], 10, 64)
-	end_time, _ := strconv.ParseInt(alert_info["start_time"], 10, 64)
+	start_time, _ := strconv.ParseInt(alert_info["start_time"], 10, 64)
+	end_time, _ := strconv.ParseInt(alert_info["end_time"], 10, 64)
 	return Alert{
-		StateName: state_name,
-		ID:        alert_id,
-		EndTime:   end_time,
-		StartTime: start_time,
+		StateName:   alert_info["state_name"],
+		ID:          alert_id,
+		EndTime:     end_time,
+		StartTime:   start_time,
+		ServerName:  alert_info["server_name"],
+		Description: alert_info["info"],
 	}
 }

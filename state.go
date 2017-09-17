@@ -20,7 +20,8 @@ func GetBadStates(r *redis.Client, server_staleness_duration int64) map[string]B
 	for _, item := range bad_servers {
 		server := item.Member.(string)
 		key := "stale_" + server
-		info := fmt.Sprintf("Server %s last reported on %v", server, item.Score)
+		last_reported_date := fmt.Sprintf("%s", time.Unix(int64(item.Score), 0))
+		info := fmt.Sprintf("Server %s last reported on %v", server, last_reported_date)
 		bad_states[key] = BadState{ServerName: server, Info: info}
 	}
 	return bad_states

@@ -124,6 +124,11 @@ func (a *App) AlertsList(w http.ResponseWriter, r *http.Request, ps httprouter.P
 }
 
 func (a *App) AlertInfo(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	alert := LoadAlertFromRedis(a.r, ps.ByName("alert_id"))
+	pretty := alert.GetPrettyRepresentation(a.r)
+	w.Header().Set("content-type", "application/json")
+	encoder := json.NewEncoder(w)
+	encoder.Encode(pretty)
 }
 
 func Web(r *redis.Client) {
