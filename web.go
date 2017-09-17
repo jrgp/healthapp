@@ -3,9 +3,13 @@ package main
 import "fmt"
 import "path/filepath"
 import "log"
+import "time"
 import "net/http"
 import "io/ioutil"
+import "crypto/hmac"
+import "crypto/sha512"
 import "encoding/json"
+import "encoding/base64"
 import "github.com/julienschmidt/httprouter"
 import "github.com/go-redis/redis"
 
@@ -52,9 +56,32 @@ func StaticResource(w http.ResponseWriter, r *http.Request, ps httprouter.Params
 }
 
 func (a *App) GetServerStatus(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	server_name := ps.ByName("server_name")
+	info, _ := ServerLoadFromRedis(a.r, server_name)
+	w.Header().Set("content-type", "application/json")
+	encoder := json.NewEncoder(w)
+	encoder.Encode(info)
 }
 
 func (a *App) PostServerStatus(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	server_name := ps.ByName("server_name")
+	hmac_header := r.Header.Get("X-INTEGRITY")
+	hmac_raw, _ := base64.URLEncoding.DecodeString(hmac_header)
+	body, _ := ioutil.ReadAll(r.Body)
+
+	correct_hmac := hmac.New(sha512.New, []byte(Configs.ApiKey))
+	correct_hmac.Write(body)
+
+	if !hmac.Equal(hmac_raw, correct_hmac.Sum(nil)) {
+		log.Printf("Received invalid hmac for server %s", server_name)
+		http.Error(w, "invalid hmac", http.StatusUnauthorized)
+		return
+	}
+
+	a.r.Set(fmt.Sprintf(KeyMap["server_info"], server_name), string(body), 0)
+	a.r.ZAdd(KeyMap["server_last_posts"], redis.Z{Member: server_name, Score: float64(time.Now().Unix())})
+
+	log.Printf("Received update for server %s", server_name)
 }
 
 func (a *App) ServersList(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
