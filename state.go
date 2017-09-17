@@ -3,7 +3,10 @@ package main
 import "time"
 import "strconv"
 import "fmt"
+import "strings"
 import "github.com/go-redis/redis"
+
+var state_human_names map[string]string
 
 type BadState struct {
 	ServerName string
@@ -25,4 +28,17 @@ func GetBadStates(r *redis.Client, server_staleness_duration int) map[string]Bad
 		bad_states[key] = BadState{ServerName: server, Info: info}
 	}
 	return bad_states
+}
+
+func GetPrettyStateName(state_name string) string {
+	parts := strings.Split(state_name, "_")
+	if len(parts) == 0 {
+		return ""
+	}
+	return state_human_names[parts[0]]
+}
+
+func init() {
+	state_human_names = map[string]string{}
+	state_human_names["stale"] = "Offline"
 }

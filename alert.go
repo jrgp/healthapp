@@ -83,6 +83,7 @@ func (alert Alert) GetPrettyRepresentation(r *redis.Client) PrettyAlertInfo {
 	info.ID = alert.ID
 	info.StateName = alert.StateName
 	info.Description = alert.Description
+	info.HumanBadName = GetPrettyStateName(alert.StateName)
 	if alert.EndTime > 0 {
 		info.Ongoing = false
 	} else {

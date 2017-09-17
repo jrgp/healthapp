@@ -19,14 +19,15 @@ type ServerListResponse struct {
 }
 
 type PrettyAlertInfo struct {
-	StartTime   string             `json:"start_time"`
-	EndTime     string             `json:"end_time"`
-	Duration    string             `json:"duration"`
-	ID          string             `json:"alert_id"`
-	StateName   string             `json:"state_name"`
-	Description string             `json:"info"`
-	Server      ServerExtendedInfo `json:"server"`
-	Ongoing     bool               `json:"ongoing"`
+	StartTime    string             `json:"start_time"`
+	EndTime      string             `json:"end_time"`
+	Duration     string             `json:"duration"`
+	ID           string             `json:"alert_id"`
+	StateName    string             `json:"state_name"`
+	Description  string             `json:"info"`
+	Server       ServerExtendedInfo `json:"server"`
+	Ongoing      bool               `json:"ongoing"`
+	HumanBadName string             `json:"human_bad"`
 }
 
 type AlertList struct {
