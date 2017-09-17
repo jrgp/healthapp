@@ -5,20 +5,21 @@ done/half-done:
 - config parsing **done**
 - web UI routes **done**
 - web API routes **done**
-  GET /api/v0/status/:server_name **done**
-  POST /api/v0/status/:server_name **done**
-  GET /api/v0/servers **done**
-  GET /api/v0/alerts **done**
-  GET /api/v0/alert/:alert_id **done**
+    GET /api/v0/status/:server_name **done**
+    POST /api/v0/status/:server_name **done**
+    GET /api/v0/servers **done**
+    GET /api/v0/alerts **done**
+    GET /api/v0/alert/:alert_id **done**
+
+- thorough testing of alert lifecycle **done**
+- alert human_bad names for states **done**
+- setuid/setgid **cant, as these arent supported on go**
 
 not done:
 
-- error handling where errors are ignored
-- make alert/server routes give 404s if theyre not found
-- thorough testing of alert lifecycle
-- alert human_bad names for states
 - alert notifications
-- setuid/setgid **cant, as these arent supported on go**
+- error handling as most errors (like updating data in redis) are ignored
+- make alert/server routes give 404s if theyre not found
 
 lastly:
 
