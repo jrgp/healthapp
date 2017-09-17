@@ -92,10 +92,12 @@ func (a *App) ServersList(w http.ResponseWriter, r *http.Request, ps httprouter.
 		return
 	}
 
+	good_time := float64(time.Now().Unix() - int64(Configs.ServerStalenessDuration))
+
 	for _, item := range servers {
 		server := ServerItemResponse{}
 		server.Name = item.Member.(string)
-		if item.Score > float64(Configs.ServerStalenessDuration) {
+		if item.Score > good_time {
 			server.Good = true
 		} else {
 			server.Good = false
