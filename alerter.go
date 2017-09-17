@@ -22,7 +22,7 @@ func alert_run(r *redis.Client) error {
 	ongoing_alerts := 0
 	new_alerts := 0
 
-	bad_states := GetBadStates(r, 300)
+	bad_states := GetBadStates(r, Configs.ServerStalenessDuration)
 
 	currently_firing, err := r.HGetAll(KeyMap["alert_currently_firing"]).Result()
 	if err != nil {

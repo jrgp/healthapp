@@ -10,9 +10,9 @@ type BadState struct {
 	Info       string
 }
 
-func GetBadStates(r *redis.Client, server_staleness_duration int64) map[string]BadState {
+func GetBadStates(r *redis.Client, server_staleness_duration int) map[string]BadState {
 	bad_states := map[string]BadState{}
-	good_time := time.Now().Unix() - server_staleness_duration
+	good_time := time.Now().Unix() - int64(server_staleness_duration)
 	bad_servers, err := r.ZRevRangeByScoreWithScores(KeyMap["server_last_posts"], redis.ZRangeBy{Min: "0", Max: strconv.FormatInt(good_time, 10)}).Result()
 	if err != nil {
 		return bad_states
