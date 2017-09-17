@@ -17,3 +17,19 @@ type ServerItemResponse struct {
 type ServerListResponse struct {
 	Servers []ServerItemResponse `json:"servers"`
 }
+
+type PrettyAlertInfo struct {
+	StartTime   string             `json:"start_time"`
+	EndTime     string             `json:"end_time"`
+	Duration    string             `json:"duration"`
+	ID          string             `json:"alert_id"`
+	StateName   string             `json:"state_name"`
+	Description string             `json:"info"`
+	Server      ServerExtendedInfo `json:"server"`
+	Ongoing     bool               `json:"ongoing"`
+}
+
+type AlertList struct {
+	Active     []PrettyAlertInfo `json:"active"`
+	Historical []PrettyAlertInfo `json:"historical"`
+}
