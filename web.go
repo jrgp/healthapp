@@ -123,18 +123,28 @@ func (a *App) ServersList(w http.ResponseWriter, r *http.Request, ps httprouter.
 func (a *App) AlertsList(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	alert_list := AlertList{}
 
+	currently_firing_ids := map[string]bool{}
+
 	currently_firing, _ := a.r.HGetAll(KeyMap["alert_currently_firing"]).Result()
 
 	for _, alert_id := range currently_firing {
 		alert := LoadAlertFromRedis(a.r, alert_id)
 		alert_pretty := alert.GetPrettyRepresentation(a.r)
 		alert_list.Active = append(alert_list.Active, alert_pretty)
+
+		currently_firing_ids[alert_id] = true
 	}
 
-	old_alerts, _ := a.r.ZRangeWithScores(KeyMap["alerts_historical"], 0, -1).Result()
+	old_alerts, _ := a.r.ZRevRangeWithScores(KeyMap["alerts_historical"], 0, -1).Result()
 
 	for _, item := range old_alerts {
 		this_alert_id := item.Member.(string)
+
+		// don't show currently firing alerts in this list
+		if _, ok := currently_firing_ids[this_alert_id]; ok {
+			continue
+		}
+
 		alert := LoadAlertFromRedis(a.r, this_alert_id)
 		alert_pretty := alert.GetPrettyRepresentation(a.r)
 		alert_list.Historical = append(alert_list.Historical, alert_pretty)
