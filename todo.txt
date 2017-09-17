@@ -18,7 +18,7 @@ not done:
 - thorough testing of alert lifecycle
 - alert human_bad names for states
 - alert notifications
-- setuid/setgid
+- setuid/setgid **cant, as these arent supported on go**
 
 lastly:
 
