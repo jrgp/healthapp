@@ -13,8 +13,8 @@ type BadState struct {
 func GetBadStates(r *redis.Client, server_staleness_duration int64) map[string]BadState {
 	bad_states := map[string]BadState{}
 	good_time := time.Now().Unix() - server_staleness_duration
-	bad_servers, err := r.ZRevRangeByScoreWithScores(KeyMap["server_last_posts"], redis.ZRangeBy{Max: "0", Min: strconv.FormatInt(good_time, 10)}).Result()
-	if err == nil {
+	bad_servers, err := r.ZRevRangeByScoreWithScores(KeyMap["server_last_posts"], redis.ZRangeBy{Min: "0", Max: strconv.FormatInt(good_time, 10)}).Result()
+	if err != nil {
 		return bad_states
 	}
 	for _, item := range bad_servers {

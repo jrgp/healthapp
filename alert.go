@@ -3,6 +3,7 @@ package main
 import "time"
 import "strconv"
 import "fmt"
+import "log"
 import "github.com/go-redis/redis"
 import "github.com/nu7hatch/gouuid"
 
@@ -24,9 +25,11 @@ func (alert Alert) Create(r *redis.Client, StateName, Description, ServerName st
 	alert.ServerName = ServerName
 
 	generated_uuid, err := uuid.NewV4()
-	if err != nil {
+	if err == nil {
 		alert.ID = StateName + "_" + generated_uuid.String()
 		alert.SaveNewAlert(r)
+	} else {
+		log.Printf("Failed generating uuid for new alert %v: %v", StateName, err)
 	}
 }
 
