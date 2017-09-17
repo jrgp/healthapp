@@ -102,13 +102,14 @@ func (a *App) ServersList(w http.ResponseWriter, r *http.Request, ps httprouter.
 		}
 
 		var more_info ServerExtendedInfo
-		var more_info_raw string
-		more_info_raw, err = a.r.Get(fmt.Sprintf(KeyMap["server_info"], server.Name)).Result()
-		json.Unmarshal([]byte(more_info_raw), &more_info)
-		more_info.Name = server.Name
-		server.Info = more_info
-
-		serversResponseList = append(serversResponseList, server)
+		more_info, err = ServerLoadFromRedis(a.r, server.Name)
+		if err == nil {
+			server.Info = more_info
+			server.Date = more_info.LastUpdated
+			serversResponseList = append(serversResponseList, server)
+		} else {
+			log.Printf("Failed to load server %v: %v", server.Name, err)
+		}
 	}
 
 	w.Header().Set("content-type", "application/json")
