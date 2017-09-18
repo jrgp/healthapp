@@ -80,10 +80,12 @@ func (alert Alert) GetPrettyRepresentation(r *redis.Client) PrettyAlertInfo {
 	info.StartTime = fmt.Sprintf("%s", time.Unix(int64(alert.StartTime), 0))
 	if alert.EndTime == 0 {
 		info.EndTime = "Ongoing"
-		info.Duration = fmt.Sprintf("%v seconds", time.Now().Unix()-alert.StartTime)
+		duration := time.Duration(time.Now().Unix()-alert.StartTime) * time.Second
+		info.Duration = duration.String()
 	} else {
 		info.EndTime = fmt.Sprintf("%s", time.Unix(int64(alert.EndTime), 0))
-		info.Duration = fmt.Sprintf("%v seconds", alert.EndTime-alert.StartTime)
+		duration := time.Duration(alert.EndTime-alert.StartTime) * time.Second
+		info.Duration = duration.String()
 	}
 	info.ID = alert.ID
 	info.StateName = alert.StateName

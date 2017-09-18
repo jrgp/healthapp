@@ -2,6 +2,7 @@ package main
 
 import "fmt"
 import "log"
+import "time"
 import "gopkg.in/gomail.v2"
 
 var message_templates map[string]MessageTemplate
@@ -19,7 +20,8 @@ func NotifyAlertNew(alert Alert) {
 
 func NotifyAlertClosed(alert Alert) {
 	subject := fmt.Sprintf(message_templates["closed_alert"].Subject, alert.StateName)
-	body := fmt.Sprintf(message_templates["closed_alert"].Body, alert.StateName, alert.Duration, alert.ID)
+	duration := time.Duration(alert.Duration) * time.Second
+	body := fmt.Sprintf(message_templates["closed_alert"].Body, alert.StateName, duration.String(), alert.ID)
 	go SendEmail(subject, body)
 }
 
@@ -62,6 +64,6 @@ func init() {
 
 	message_templates["closed_alert"] = MessageTemplate{
 		Subject: "Alert \"%s\" closed",
-		Body:    "Hi,\n\nAlert \"%s\" closed after %d seconds.\n\n%s\n\nRegards",
+		Body:    "Hi,\n\nAlert \"%s\" closed after %s.\n\n%s\n\nRegards",
 	}
 }
