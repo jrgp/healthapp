@@ -50,14 +50,18 @@ func StaticResource(w http.ResponseWriter, r *http.Request, ps httprouter.Params
 		}
 		fmt.Fprint(w, string(contents))
 	} else {
-		fmt.Fprint(w, "failed loading file")
+		http.Error(w, "invalid file", http.StatusNotFound)
 		log.Printf("Failed loading %v: %v", path, err)
 	}
 }
 
 func (a *App) GetServerStatus(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	server_name := ps.ByName("server_name")
-	info, _ := ServerLoadFromRedis(a.r, server_name)
+	info, err := ServerLoadFromRedis(a.r, server_name)
+	if err != nil {
+		http.Error(w, "invalid server", http.StatusNotFound)
+		return
+	}
 	w.Header().Set("content-type", "application/json")
 	encoder := json.NewEncoder(w)
 	encoder.Encode(info)
@@ -128,7 +132,11 @@ func (a *App) AlertsList(w http.ResponseWriter, r *http.Request, ps httprouter.P
 	currently_firing, _ := a.r.HGetAll(KeyMap["alert_currently_firing"]).Result()
 
 	for _, alert_id := range currently_firing {
-		alert := LoadAlertFromRedis(a.r, alert_id)
+		alert, found := LoadAlertFromRedis(a.r, alert_id)
+		if found != nil {
+			log.Printf("Could not load alert %s", alert_id)
+			continue
+		}
 		alert_pretty := alert.GetPrettyRepresentation(a.r)
 		alert_list.Active = append(alert_list.Active, alert_pretty)
 
@@ -145,7 +153,11 @@ func (a *App) AlertsList(w http.ResponseWriter, r *http.Request, ps httprouter.P
 			continue
 		}
 
-		alert := LoadAlertFromRedis(a.r, this_alert_id)
+		alert, found := LoadAlertFromRedis(a.r, this_alert_id)
+		if found != nil {
+			log.Printf("Could not load alert %s", this_alert_id)
+			continue
+		}
 		alert_pretty := alert.GetPrettyRepresentation(a.r)
 		alert_list.Historical = append(alert_list.Historical, alert_pretty)
 	}
@@ -156,7 +168,11 @@ func (a *App) AlertsList(w http.ResponseWriter, r *http.Request, ps httprouter.P
 }
 
 func (a *App) AlertInfo(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	alert := LoadAlertFromRedis(a.r, ps.ByName("alert_id"))
+	alert, err := LoadAlertFromRedis(a.r, ps.ByName("alert_id"))
+	if err != nil {
+		http.Error(w, "invalid alert", http.StatusNotFound)
+		return
+	}
 	alert_pretty := alert.GetPrettyRepresentation(a.r)
 	w.Header().Set("content-type", "application/json")
 	encoder := json.NewEncoder(w)

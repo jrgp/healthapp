@@ -15,11 +15,11 @@ done/half-done:
 - alert human_bad names for states **done**
 - setuid/setgid **cant, as these arent supported on go**
 - alert notifications
+- make alert/server routes give 404s if theyre not found
 
 not done:
 
 - error handling as most errors (like updating data in redis) are ignored
-- make alert/server routes give 404s if theyre not found
 
 lastly:
 

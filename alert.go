@@ -2,6 +2,7 @@ package main
 
 import "time"
 import "strconv"
+import "errors"
 import "fmt"
 import "log"
 import "github.com/go-redis/redis"
@@ -105,9 +106,15 @@ func (alert Alert) GetPrettyRepresentation(r *redis.Client) PrettyAlertInfo {
 	return info
 }
 
-func LoadAlertFromRedis(r *redis.Client, alert_id string) Alert {
+func LoadAlertFromRedis(r *redis.Client, alert_id string) (Alert, error) {
 	alert_key := fmt.Sprintf(KeyMap["alert_info"], alert_id)
-	alert_info, _ := r.HGetAll(alert_key).Result()
+	alert_info, err := r.HGetAll(alert_key).Result()
+	if err != nil {
+		return Alert{ID: alert_id}, err
+	}
+	if len(alert_info) == 0 {
+		return Alert{ID: alert_id}, errors.New("alert not found")
+	}
 	start_time, _ := strconv.ParseInt(alert_info["start_time"], 10, 64)
 	end_time, _ := strconv.ParseInt(alert_info["end_time"], 10, 64)
 	return Alert{
@@ -117,5 +124,5 @@ func LoadAlertFromRedis(r *redis.Client, alert_id string) Alert {
 		StartTime:   start_time,
 		ServerName:  alert_info["server_name"],
 		Description: alert_info["info"],
-	}
+	}, nil
 }

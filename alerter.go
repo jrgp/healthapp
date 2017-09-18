@@ -38,7 +38,7 @@ func alert_run(r *redis.Client) error {
 			ongoing_alerts++
 		} else {
 			log.Printf("Alert %s no longer firing. Closing.", state_name)
-			alert := LoadAlertFromRedis(r, alert_id)
+			alert, _ := LoadAlertFromRedis(r, alert_id)
 			alert.Close(r)
 			closed_alerts++
 		}
