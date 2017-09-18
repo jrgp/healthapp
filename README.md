@@ -1,6 +1,6 @@
 # HealthApp
 
-Open source (MIT) Golang Replacement for New Relic's deprecated server health monitoring solution. This will fire alerts and send emails when servers being monitored stop reporting.
+Open source (MIT) replacement for New Relic's deprecated server health monitoring solution, written in Golang. This will fire alerts and send emails when servers being monitored stop reporting.
 
 ![Servers List](screenshots/servers.png)
 
@@ -11,7 +11,6 @@ Open source (MIT) Golang Replacement for New Relic's deprecated server health mo
 - Intelligent alert lifecycle and processing. 1) Created 2) Ongoing 3) Closed.
 - Alerts created when monitoring servers drop out
 - Send emails on alerts
-- Configurable email send intervals
 - Lightweight with minimal configuration and setup. Only dependency is redis.
 - HMAC auth + integrity checking to avoid other people sending you alerts
 - Smooth, lightweight single-page-app (SPA) UI, styled with [Bootswatch](https://bootswatch.com/).
@@ -68,11 +67,11 @@ To start slave agent:
 
 ## Prod deployment
 
-If you have [fpm](https://github.com/spotify/dh-virtualenv) installed, you can build a .deb package using the following. You could even use [quickdebrepo](https://github.com/jrgp/quickdebrepo) to host your own apt repositiory.
+If you have [fpm](https://fpm.readthedocs.io/en/latest/index.html) installed, you can build a .deb package using the following. You could even use [quickdebrepo](https://github.com/jrgp/quickdebrepo) to host your own apt repositiory.
 
-    fpm
+    fpm -s dir -t deb -n healthapp -v 0.0.1 --prefix /opt/healthapp healthapp static
 
-Once the resulting deb is installed, HealthApp will be installed to `/opt/healthapp`.
+Once the resulting deb is installed, HealthApp will be installed to `/opt/healthapp/healthapp` and will accept the arguments as above.
 
 It's recommended you run the API Server behind a reverse proxy, eg apache or nginx, and use that to terminate SSL.
 

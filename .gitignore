@@ -2,3 +2,5 @@
 /vendor
 /healthapp
 /config.yaml
+*.rpm
+*.deb
