@@ -22,9 +22,10 @@ enable_emails: True
 
 # smtp server
 email_server: localhost
+email_server_port: 25
 
 # From line
-email_sender: Python HealthApp <noreply@yourdomain.com>
+email_sender: HealthApp <noreply@yourdomain.com>
 
 # list of recipients for emails
 email_recipients:

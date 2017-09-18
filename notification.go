@@ -1,43 +1,67 @@
 package main
 
+import "fmt"
+import "log"
+import "gopkg.in/gomail.v2"
+
 var message_templates map[string]MessageTemplate
 
 type MessageTemplate struct {
-	subject string
-	body    string
+	Subject string
+	Body    string
 }
 
-func NotifyAlertNew() {
-
+func NotifyAlertNew(alert Alert) {
+	subject := fmt.Sprintf(message_templates["new_alert"].Subject, alert.StateName)
+	body := fmt.Sprintf(message_templates["new_alert"].Body, alert.StateName, alert.ID)
+	go SendEmail(subject, body)
 }
 
-func NotifyAlertClosed() {
-
+func NotifyAlertClosed(alert Alert) {
+	subject := fmt.Sprintf(message_templates["closed_alert"].Subject, alert.StateName)
+	body := fmt.Sprintf(message_templates["closed_alert"].Body, alert.StateName, alert.Duration, alert.ID)
+	go SendEmail(subject, body)
 }
 
-func NotifyAlertOngoing() {
-
+func NotifyAlertOngoing(alert Alert) {
+	subject := fmt.Sprintf(message_templates["ongoing_alert"].Subject, alert.StateName)
+	body := fmt.Sprintf(message_templates["ongoing_alert"].Body, alert.StateName, alert.ID)
+	go SendEmail(subject, body)
 }
 
-func SendEmail(subject, body string) error {
-	return nil
+func SendEmail(subject, body string) {
+	m := gomail.NewMessage()
+	m.SetHeader("From", Configs.EmailSender)
+	m.SetHeader("Subject", subject)
+	m.SetBody("text/plain", body)
+
+	for _, address := range Configs.EmailRecipients {
+		m.SetHeader("To", address)
+	}
+
+	d := gomail.Dialer{Host: Configs.EmailServer, Port: Configs.EmailServerPort}
+	if err := d.DialAndSend(m); err != nil {
+		log.Printf("Failed emailing: %s", err)
+	} else {
+		log.Printf("Emailed '%s' notification", subject)
+	}
 }
 
 func init() {
 	message_templates = map[string]MessageTemplate{}
 
 	message_templates["new_alert"] = MessageTemplate{
-		subject: "New Alert \"%s\"!",
-		body:    "Hi,\n\nAlert \"%s\" has just started firing.\n\n%s\n\nRegards",
-	}
-
-	message_templates["closed_alert"] = MessageTemplate{
-		subject: "",
-		body:    "",
+		Subject: "New Alert \"%s\"!",
+		Body:    "Hi,\n\nAlert \"%s\" has just started firing.\n\n%s\n\nRegards",
 	}
 
 	message_templates["ongoing_alert"] = MessageTemplate{
-		subject: "",
-		body:    "",
+		Subject: "Alert \"%s\" still firing",
+		Body:    "Hi,\n\nAlert \"%s\" is still firing.\n\n%s\n\nRegards",
+	}
+
+	message_templates["closed_alert"] = MessageTemplate{
+		Subject: "Alert \"%s\" closed",
+		Body:    "Hi,\n\nAlert \"%s\" closed after %d seconds.\n\n%s\n\nRegards",
 	}
 }

@@ -6,3 +6,5 @@ import:
 - package: github.com/julienschmidt/httprouter
   version: v1.1
 - package: github.com/matishsiao/goInfo
+- package: gopkg.in/gomail.v2
+  version: 2.0.0

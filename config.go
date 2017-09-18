@@ -19,6 +19,7 @@ type Config struct {
 	AlertSendEmailInterval  int      `yaml:"alert_send_email_interval"`
 	EnableEmails            bool     `yaml:"enable_emails"`
 	EmailServer             string   `yaml:"email_server"`
+	EmailServerPort         int      `yaml:"email_server_port"`
 	EmailSender             string   `yaml:"email_sender"`
 	EmailRecipients         []string `yaml:"email_recipients"`
 }

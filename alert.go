@@ -28,6 +28,9 @@ func (alert Alert) Create(r *redis.Client, StateName, Description, ServerName st
 	if err == nil {
 		alert.ID = StateName + "_" + generated_uuid.String()
 		alert.SaveNewAlert(r)
+		if Configs.EnableEmails {
+			NotifyAlertNew(alert)
+		}
 	} else {
 		log.Printf("Failed generating uuid for new alert %v: %v", StateName, err)
 	}
@@ -37,7 +40,9 @@ func (alert Alert) Close(r *redis.Client) {
 	alert.EndTime = time.Now().Unix()
 	alert.Duration = alert.EndTime - alert.StartTime
 	alert.SaveClosedAlert(r)
-	// TODO notification
+	if Configs.EnableEmails {
+		NotifyAlertClosed(alert)
+	}
 }
 
 func (alert Alert) SaveNewAlert(r *redis.Client) {

@@ -1,5 +1,5 @@
-hash: 768986c069e8bd2b1fd29009a583df8e8222912813b91a176e4dec6e6d58266f
-updated: 2017-09-16T14:16:01.002762954-07:00
+hash: d3a6d546dd6eafa86807b6bed23f449b6d9bef626d3368fcf35a8cf3ce20019c
+updated: 2017-09-17T22:24:41.312897905-07:00
 imports:
 - name: github.com/go-redis/redis
   version: fdafb11e5fa5d52d965e12073c8a58468c98ebe2
@@ -15,6 +15,8 @@ imports:
   version: 617e6440957ee5591c8912e8b7e2f03a86298722
 - name: github.com/nu7hatch/gouuid
   version: 179d4d0c4d8d407a32af483c2354df1d2c91e6c3
+- name: gopkg.in/gomail.v2
+  version: 41f3572897373c5538c50a2402db15db079fa4fd
 - name: gopkg.in/yaml.v2
   version: eb3733d160e74a9c7e442f435eb3bea458e1d19f
 testImports: []

@@ -14,10 +14,10 @@ done/half-done:
 - thorough testing of alert lifecycle **done**
 - alert human_bad names for states **done**
 - setuid/setgid **cant, as these arent supported on go**
+- alert notifications
 
 not done:
 
-- alert notifications
 - error handling as most errors (like updating data in redis) are ignored
 - make alert/server routes give 404s if theyre not found
 
