@@ -3,6 +3,7 @@ package main
 import "fmt"
 import "path/filepath"
 import "log"
+import "sort"
 import "time"
 import "net/http"
 import "io/ioutil"
@@ -91,17 +92,27 @@ func (a *App) PostServerStatus(w http.ResponseWriter, r *http.Request, ps httpro
 func (a *App) ServersList(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	serversResponseList := []ServerItemResponse{}
 
-	servers, err := a.r.ZRangeWithScores(KeyMap["server_last_posts"], 0, -1).Result()
+	servers_raw, err := a.r.ZRangeWithScores(KeyMap["server_last_posts"], 0, -1).Result()
 	if err != nil {
 		return
 	}
 
+	servers_names := []string{}
+	servers_scores := map[string]float64{}
+
+	for _, item := range servers_raw {
+		servers_names = append(servers_names, item.Member.(string))
+		servers_scores[item.Member.(string)] = item.Score
+	}
+
+	sort.Strings(servers_names)
+
 	good_time := float64(time.Now().Unix() - int64(Configs.ServerStalenessDuration))
 
-	for _, item := range servers {
+	for _, server_name := range servers_names {
 		server := ServerItemResponse{}
-		server.Name = item.Member.(string)
-		if item.Score > good_time {
+		server.Name = server_name
+		if servers_scores[server_name] > good_time {
 			server.Good = true
 		} else {
 			server.Good = false
