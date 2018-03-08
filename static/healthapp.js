@@ -3,6 +3,35 @@ function init_healthapp() {
     return str ? 'Yes' : 'no';
   });
 
+  Handlebars.registerHelper('humansize', function(size) {
+    if (size < (1024 * 1024 * 1024)) {
+      return (size / (1024 * 1024)).toFixed(2) + 'MB';
+    }
+    if (size < (1024 * 1024 * 1024 * 1024)) {
+      return (size / (1024 * 1024 * 1024)).toFixed(2) + 'GB';
+    }
+    if (size < (1024 * 1024 * 1024 * 1024 * 1024)) {
+      return (size / (1024 * 1024 * 1024 * 1024)).toFixed(2) + 'TB';
+    }
+  });
+
+  Handlebars.registerHelper('usagecolor', function(size) {
+    size = parseInt(size);
+    if (size > 70) {
+      return 'warning';
+    }
+    if (size > 95) {
+      return 'danger';
+    }
+    return 'success';
+  });
+
+  function sort_fs_desc(filesystems) {
+    return filesystems.sort(function(a, b) {
+      return a.Pct < b.Pct;
+    });
+  }
+
   function get_servers(callback) {
     $.get('/api/v0/servers', callback);
   }
@@ -51,13 +80,24 @@ function init_healthapp() {
 
   function servers_list_page(params) {
     get_servers(function(data) {
+      for (var i = 0; i < data.servers.length; i++) {
+        if (data.servers[i].info.Filesystems.length > 0) {
+          sort_fs_desc(data.servers[i].info.Filesystems);
+          data.servers[i].fullest_disk = data.servers[i].info.Filesystems[0];
+        } else {
+          data.servers[i].fullest_disk = false;
+        }
+      }
       render_page('Servers', server_list(data));
     });
   }
 
   function server_view_page(params) {
       get_server(params.servername, function(data) {
-        render_page(params.servername, server_view({info: data}));
+        var filesystems = data.Filesystems;
+        delete data.Filesystems;
+        sort_fs_desc(filesystems)
+        render_page(params.servername, server_view({info: data, filesystems: filesystems}));
       });
   }
 

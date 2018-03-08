@@ -59,6 +59,7 @@ func Agent() {
 	sleep_time := 30
 
 	for {
+		myInfo.Filesystems, _ = GetFilesystems()
 		body, macstr := generatePayload(myInfo, Configs.ApiKey)
 		err := postPayload(api_url, body, macstr)
 		if err == nil {

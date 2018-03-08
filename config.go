@@ -15,6 +15,7 @@ type Config struct {
 	SetUID                  string   `yaml:"setuid"`
 	SetGID                  string   `yaml:"setgid"`
 	ServerStalenessDuration int      `yaml:"server_staleness_duration"`
+	MaxFilesystemPercentage uint64   `yaml:"max_filesystem_percentage"`
 	AlertProcessInterval    int      `yaml:"alert_process_interval"`
 	AlertSendEmailInterval  int      `yaml:"alert_send_email_interval"`
 	EnableEmails            bool     `yaml:"enable_emails"`

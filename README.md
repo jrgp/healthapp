@@ -1,6 +1,6 @@
 # HealthApp
 
-Open source (MIT) replacement for New Relic's deprecated server health monitoring solution, written in Golang. This will fire alerts and send emails when servers being monitored stop reporting.
+Open source (MIT) replacement for New Relic's deprecated server health monitoring solution, written in Golang. This will fire alerts and send emails when servers being monitored stop reporting or when their filesystems get too full.
 
 ![Servers List](screenshots/servers.png)
 
@@ -10,6 +10,7 @@ Open source (MIT) replacement for New Relic's deprecated server health monitorin
 
 - Intelligent alert lifecycle and processing. 1) Created 2) Ongoing 3) Closed.
 - Alerts created when monitoring servers drop out
+- Alerts created when filesystems on monitored servers go above threshold
 - Send emails on alerts
 - Lightweight with minimal configuration and setup. Only dependency is redis.
 - HMAC auth + integrity checking to avoid other people sending you alerts

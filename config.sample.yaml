@@ -8,6 +8,9 @@ api_url: http://localhost:8000
 
 api_listen: ':8000'
 
+# alert when filesystems get bigger than this percentage
+max_filesystem_percentage: 95
+
 # servers are considered dead of they haven't updated in this many seconds
 server_staleness_duration: 300
 

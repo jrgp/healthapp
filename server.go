@@ -19,5 +19,9 @@ func ServerLoadFromRedis(r *redis.Client, name string) (ServerExtendedInfo, erro
 		info.LastUpdated = fmt.Sprintf("%s", time.Unix(int64(score), 0))
 	}
 
+	if info.Filesystems == nil {
+		info.Filesystems = []ServerFilesystem{}
+	}
+
 	return info, nil
 }

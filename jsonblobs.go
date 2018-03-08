@@ -1,10 +1,19 @@
 package main
 
+type ServerFilesystem struct {
+	Path string `json:"Path"`
+	Size uint64 `json:"Size"`
+	Used uint64 `json:"Used"`
+	Free uint64 `json:"Free"`
+	Pct  uint64 `json:"Pct"`
+}
+
 type ServerExtendedInfo struct {
 	Kernel      string `json:"Kernel"`
 	OS          string `json:"OS"`
 	Name        string `json:"name"`
 	LastUpdated string `json:"Last Updated"`
+	Filesystems []ServerFilesystem
 }
 
 type ServerItemResponse struct {
