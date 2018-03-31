@@ -31,7 +31,7 @@ func alert_run(r *redis.Client) error {
 		bad_states[key] = state
 	}
 
-	currently_firing, err := r.HGetAll(KeyMap["alert_currently_firing"]).Result()
+	currently_firing, err := r.HGetAll(REDIS_KEY_ALERT_CURRENTLY_FIRING).Result()
 	if err != nil {
 		return err
 	}

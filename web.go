@@ -75,8 +75,8 @@ func (a *App) PostServerStatus(w http.ResponseWriter, r *http.Request, ps httpro
 		return
 	}
 
-	a.r.Set(fmt.Sprintf(KeyMap["server_info"], server_name), string(body), 0)
-	a.r.ZAdd(KeyMap["server_last_posts"], redis.Z{Member: server_name, Score: float64(time.Now().Unix())})
+	a.r.Set(fmt.Sprintf(REDIS_KEY_SERVER_INFO, server_name), string(body), 0)
+	a.r.ZAdd(REDIS_KEY_SERVER_LASTS_POSTS, redis.Z{Member: server_name, Score: float64(time.Now().Unix())})
 
 	log.Printf("Received update for server %s", server_name)
 }
@@ -84,7 +84,7 @@ func (a *App) PostServerStatus(w http.ResponseWriter, r *http.Request, ps httpro
 func (a *App) ServersList(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	serversResponseList := []ServerItemResponse{}
 
-	servers_raw, err := a.r.ZRangeWithScores(KeyMap["server_last_posts"], 0, -1).Result()
+	servers_raw, err := a.r.ZRangeWithScores(REDIS_KEY_SERVER_LASTS_POSTS, 0, -1).Result()
 	if err != nil {
 		return
 	}
@@ -132,7 +132,7 @@ func (a *App) AlertsList(w http.ResponseWriter, r *http.Request, ps httprouter.P
 
 	currently_firing_ids := map[string]bool{}
 
-	currently_firing, _ := a.r.HGetAll(KeyMap["alert_currently_firing"]).Result()
+	currently_firing, _ := a.r.HGetAll(REDIS_KEY_ALERT_CURRENTLY_FIRING).Result()
 
 	for _, alert_id := range currently_firing {
 		alert, found := LoadAlertFromRedis(a.r, alert_id)
@@ -146,7 +146,7 @@ func (a *App) AlertsList(w http.ResponseWriter, r *http.Request, ps httprouter.P
 		currently_firing_ids[alert_id] = true
 	}
 
-	old_alerts, _ := a.r.ZRevRangeWithScores(KeyMap["alerts_historical"], 0, -1).Result()
+	old_alerts, _ := a.r.ZRevRangeWithScores(REDIS_KEY_ALERT_HISTORICAL, 0, -1).Result()
 
 	for _, item := range old_alerts {
 		this_alert_id := item.Member.(string)

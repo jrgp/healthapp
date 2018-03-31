@@ -54,15 +54,15 @@ func (alert Alert) SaveNewAlert(r *redis.Client) {
 	values["server_name"] = alert.ServerName
 	values["state_name"] = alert.StateName
 
-	r.HMSet(fmt.Sprintf(KeyMap["alert_info"], alert.ID), values)
-	r.ZAdd(KeyMap["alerts_historical"], redis.Z{Score: float64(alert.StartTime), Member: alert.ID})
-	r.ZAdd(fmt.Sprintf(KeyMap["server_alerts"], alert.ServerName), redis.Z{Score: float64(alert.StartTime), Member: alert.ID})
-	r.HSet(KeyMap["alert_currently_firing"], alert.StateName, alert.ID)
+	r.HMSet(fmt.Sprintf(REDIS_KEY_ALERT_INFO, alert.ID), values)
+	r.ZAdd(REDIS_KEY_ALERT_HISTORICAL, redis.Z{Score: float64(alert.StartTime), Member: alert.ID})
+	r.ZAdd(fmt.Sprintf(REDIS_KEY_SERVER_ALERTS, alert.ServerName), redis.Z{Score: float64(alert.StartTime), Member: alert.ID})
+	r.HSet(REDIS_KEY_ALERT_CURRENTLY_FIRING, alert.StateName, alert.ID)
 }
 
 func (alert Alert) SaveClosedAlert(r *redis.Client) {
-	r.HDel(KeyMap["alert_currently_firing"], alert.StateName)
-	alert_key := fmt.Sprintf(KeyMap["alert_info"], alert.ID)
+	r.HDel(REDIS_KEY_ALERT_CURRENTLY_FIRING, alert.StateName)
+	alert_key := fmt.Sprintf(REDIS_KEY_ALERT_INFO, alert.ID)
 	exists, _ := r.Exists(alert_key).Result()
 
 	if exists == 0 {
@@ -73,7 +73,7 @@ func (alert Alert) SaveClosedAlert(r *redis.Client) {
 	values["end_time"] = strconv.FormatInt(alert.EndTime, 10)
 	values["start_time"] = strconv.FormatInt(alert.StartTime, 10)
 	values["duration"] = strconv.FormatInt(alert.Duration, 10)
-	r.HMSet(fmt.Sprintf(KeyMap["alert_info"], alert.ID), values)
+	r.HMSet(fmt.Sprintf(REDIS_KEY_ALERT_INFO, alert.ID), values)
 }
 
 func (alert Alert) GetPrettyRepresentation(r *redis.Client) PrettyAlertInfo {
@@ -107,7 +107,7 @@ func (alert Alert) GetPrettyRepresentation(r *redis.Client) PrettyAlertInfo {
 }
 
 func LoadAlertFromRedis(r *redis.Client, alert_id string) (Alert, error) {
-	alert_key := fmt.Sprintf(KeyMap["alert_info"], alert_id)
+	alert_key := fmt.Sprintf(REDIS_KEY_ALERT_INFO, alert_id)
 	alert_info, err := r.HGetAll(alert_key).Result()
 	if err != nil {
 		return Alert{ID: alert_id}, err

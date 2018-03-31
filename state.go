@@ -16,7 +16,7 @@ type BadState struct {
 func GetStaleHosts(r *redis.Client, server_staleness_duration int) map[string]BadState {
 	bad_states := map[string]BadState{}
 	good_time := time.Now().Unix() - int64(server_staleness_duration)
-	bad_servers, err := r.ZRevRangeByScoreWithScores(KeyMap["server_last_posts"], redis.ZRangeBy{Min: "0", Max: strconv.FormatInt(good_time, 10)}).Result()
+	bad_servers, err := r.ZRevRangeByScoreWithScores(REDIS_KEY_SERVER_LASTS_POSTS, redis.ZRangeBy{Min: "0", Max: strconv.FormatInt(good_time, 10)}).Result()
 	if err != nil {
 		return bad_states
 	}
@@ -33,7 +33,7 @@ func GetStaleHosts(r *redis.Client, server_staleness_duration int) map[string]Ba
 func GetBadDiskStates(r *redis.Client, server_staleness_duration int, max_disk_pct uint64) map[string]BadState {
 	bad_states := map[string]BadState{}
 	good_time := time.Now().Unix() - int64(server_staleness_duration)
-	servers, rerr := r.ZRevRangeByScoreWithScores(KeyMap["server_last_posts"], redis.ZRangeBy{Max: "inf", Min: strconv.FormatInt(good_time, 10)}).Result()
+	servers, rerr := r.ZRevRangeByScoreWithScores(REDIS_KEY_SERVER_LASTS_POSTS, redis.ZRangeBy{Max: "inf", Min: strconv.FormatInt(good_time, 10)}).Result()
 	if rerr != nil {
 		return bad_states
 	}
