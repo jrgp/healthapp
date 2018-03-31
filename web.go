@@ -5,6 +5,7 @@ import "path/filepath"
 import "log"
 import "sort"
 import "time"
+import "mime"
 import "net/http"
 import "io/ioutil"
 import "crypto/hmac"
@@ -14,16 +15,7 @@ import "encoding/base64"
 import "github.com/julienschmidt/httprouter"
 import "github.com/go-redis/redis"
 
-var staticPath string
-var mimes map[string]string
-
-func init() {
-	staticPath = "static"
-	mimes = map[string]string{}
-	mimes[".css"] = "text/css"
-	mimes[".js"] = "text/javascript"
-	mimes[".png"] = "image/png"
-}
+var staticPath string = "static"
 
 type App struct {
 	r *redis.Client
@@ -43,7 +35,7 @@ func SinglePageApp(w http.ResponseWriter, r *http.Request, _ httprouter.Params) 
 func StaticResource(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	path := staticPath + ps.ByName("path")
 	ext := filepath.Ext(path)
-	mime, _ := mimes[ext]
+	mime := mime.TypeByExtension(ext)
 	contents, err := ioutil.ReadFile(path)
 	if err == nil {
 		if mime != "" {
