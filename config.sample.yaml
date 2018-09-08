@@ -33,3 +33,6 @@ email_sender: HealthApp <noreply@yourdomain.com>
 # list of recipients for emails
 email_recipients:
   - you@yourdomain.com
+
+# Don't be verbose in agent logging
+hush_logs: True

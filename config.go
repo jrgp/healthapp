@@ -23,6 +23,7 @@ type Config struct {
 	EmailServerPort         int      `yaml:"email_server_port"`
 	EmailSender             string   `yaml:"email_sender"`
 	EmailRecipients         []string `yaml:"email_recipients"`
+	HushLogging             bool     `yaml:"hush_logs"`
 }
 
 var Configs Config

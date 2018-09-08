@@ -63,7 +63,9 @@ func Agent() {
 		body, macstr := generatePayload(myInfo, Configs.ApiKey)
 		err := postPayload(api_url, body, macstr)
 		if err == nil {
-			log.Printf("Successful post. Sleeping for %v seconds.", sleep_time)
+			if !Configs.HushLogging {
+				log.Printf("Successful post. Sleeping for %v seconds.", sleep_time)
+			}
 		} else {
 			log.Printf("%v. Sleeping for %v seconds.", err, sleep_time)
 		}
