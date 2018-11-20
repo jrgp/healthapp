@@ -17,11 +17,11 @@ function init_healthapp() {
 
   Handlebars.registerHelper('usagecolor', function(size) {
     size = parseInt(size);
-    if (size > 70) {
-      return 'warning';
-    }
     if (size > 95) {
       return 'danger';
+    }
+    if (size > 70) {
+      return 'warning';
     }
     return 'success';
   });
