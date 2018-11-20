@@ -27,8 +27,8 @@ function init_healthapp() {
   });
 
   function sort_fs_desc(filesystems) {
-    return filesystems.sort(function(a, b) {
-      return a.Pct < b.Pct;
+    filesystems.sort(function(a, b) {
+      return b.Pct - a.Pct;
     });
   }
 
