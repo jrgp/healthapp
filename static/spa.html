@@ -61,7 +61,7 @@
         <td><img class="osicon" src="/static/os_{{info.OS}}.png"><a data-navigo href="/server/{{name}}">{{name}}</a></td>
         <td>
           {{#if fullest_disk}}
-            {{fullest_disk.Path}} <span class="label label-{{usagecolor fullest_disk.Pct}}">{{fullest_disk.Pct}}%</span>
+            <span class="label label-{{usagecolor fullest_disk.Pct}}">{{fullest_disk.Pct}}%</span> {{fullest_disk.Path}}
           {{/if}}
         </td>
         <td class="status-{{#if good}}good{{else}}bad{{/if}}">{{time}}</td>
